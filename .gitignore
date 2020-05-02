@@ -1,0 +1,11 @@
+*.s
+*.d
+*.o
+*.a90
+*.cof
+*.lnk
+*.lss
+*.lst
+*.map
+*.obj
+*.sym
