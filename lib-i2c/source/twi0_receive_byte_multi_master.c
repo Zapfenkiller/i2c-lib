@@ -35,13 +35,6 @@
 //               ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 //               FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
 //               OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-// Project     : Roboter 2006
-// Author      : R. Trapp
-// Initial date: 9. Aug. 2012
-// Release rev.: 
-// Copyright   : (c) 2006-2013 R. Trapp / H.A.R.R.Y.
-// License     : 
 ////////////////////////////////////////////////////////////////////////////////
 
 
