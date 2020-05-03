@@ -1,10 +1,46 @@
-/*
-R. Trapp, Apr / 29 / 2020:
-   Originalcode aus 'testcase_usi_twi_168.c' genommen, fehlende
-   Stellen ergänzt (nicht mehr im Makefile).
-   Es compiliert und linkt. Funzen sollte es auch noch, ist aber
-   mangels Setup diesmal ungetestet. Am Code wurde nichts gedreht.
-*/
+////////////////////////////////////////////////////////////////////////////////
+// File        : i2c_mms_twi.c
+// Description : Multi-master-with-slave mode on TWI hardware.
+// Author      : R. Trapp
+// Project     : I²C-Lib Demo
+// Initial date: Apr / 29 / 2020
+// Copyright   : © 2020 R. Trapp / H.A.R.R.Y.
+// License     : https://mit-license.org/
+//
+//               The MIT License (MIT)
+//
+//               Permission is hereby granted, free of charge, to
+//               any person obtaining a copy of this software and
+//               associated documentation files (the “Software”),
+//               to deal in the Software without restriction,
+//               including without limitation the rights to use,
+//               copy, modify, merge, publish, distribute,
+//               sublicense, and/or sell copies of the Software,
+//               and to permit persons to whom the Software is
+//               furnished to do so, subject to the following
+//               conditions:
+//
+//               The above copyright notice and this permission
+//               notice shall be included in all copies or
+//               substantial portions of the Software.
+//
+//               THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT
+//               WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+//               INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+//               MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE
+//               AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+//               AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+//               CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+//               ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+//               FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
+//               OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+////////////////////////////////////////////////////////////////////////////////
+
+
+/// \file i2c_mms_twi.c
+/// \brief
+/// Demo application performing as one master of several masters and as slave.
+
 
 // Check project settings (Makefile) to match this demo:
 #ifndef I2C0_HW_AS_MASTER
