@@ -11,7 +11,7 @@
 
 
 #include "i2c_hw.h"
-#if defined(I2C_HW_USI_H_INCLUDED) && defined(I2C0_HW_AS_SLAVE) && defined(I2C0_HW_AS_MASTER)
+#if defined(I2C_HW_USI_H_INCLUDED) && defined(I2C0_HW_AS_SLAVE) //&& defined(I2C0_HW_AS_MASTER)
 #include "i2c_lib_private.h"
 #include <avr/io.h>
 
