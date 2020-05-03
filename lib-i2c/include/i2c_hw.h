@@ -1,12 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // File        : i2c_hw.h
-// Project     : Roboter 2006
-// Author      : R. Trapp
-// Initial date: 2. Aug. 2012
-// Release rev.: 
-// Copyright   : (c) 2006-2013 R. Trapp / H.A.R.R.Y.
-// License     : 
-// Description : Definitions for using I�C hardware. Uniform interface to
+// Description : Definitions for using I²C hardware. Uniform interface to
 //               application code, independent of underlying hardware.
 //               Based on older version of 2006.
 //               These identifiers need to be defined already for the library
@@ -23,13 +17,40 @@
 //               To further improve code size the flag
 //                  I2C0_HW_SINGLE_MASTER
 //               can be set to rule out multi master related parts.
-// Release status:
-//               [ ] R0 = first draft
-//               [ ] R1 = able to compile and link
-//               [ ] R2 = running stable
-//               [x] R3 = working as intended
-//               [ ] R4 = documentation complete
-//               [ ] R5 = final release
+// Author      : R. Trapp
+// Project     : I²C-Lib
+// Initial date: Aug /  2 / 2012
+// Copyright   : © 2006-2020 R. Trapp / H.A.R.R.Y.
+// License     : https://mit-license.org/
+//
+//               The MIT License (MIT)
+//               ---------------------
+//
+//               Permission is hereby granted, free of charge, to
+//               any person obtaining a copy of this software and
+//               associated documentation files (the “Software”),
+//               to deal in the Software without restriction,
+//               including without limitation the rights to use,
+//               copy, modify, merge, publish, distribute,
+//               sublicense, and/or sell copies of the Software,
+//               and to permit persons to whom the Software is
+//               furnished to do so, subject to the following
+//               conditions:
+//
+//               The above copyright notice and this permission
+//               notice shall be included in all copies or
+//               substantial portions of the Software.
+//
+//               THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT
+//               WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+//               INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+//               MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE
+//               AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+//               AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+//               CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+//               ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+//               FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
+//               OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ////////////////////////////////////////////////////////////////////////////////
 //  --- Doxygen ---
 /// \mainpage
