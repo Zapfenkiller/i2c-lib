@@ -96,7 +96,6 @@ CSOURCES += ../lib-i2c/source/twi0_assert_stop_sequence.c
 CSOURCES += ../lib-i2c/source/twi0_check4error.c
 CSOURCES += ../lib-i2c/source/twi0_open_device_multi_master.c
 CSOURCES += ../lib-i2c/source/twi0_open_device_single_master.c
-CSOURCES += ../lib-i2c/source/twi0_receive_byte.c
 CSOURCES += ../lib-i2c/source/twi0_receive_byte_multi_master.c
 CSOURCES += ../lib-i2c/source/twi0_receive_byte_single_master.c
 CSOURCES += ../lib-i2c/source/twi0_receive_byte_slave.c
