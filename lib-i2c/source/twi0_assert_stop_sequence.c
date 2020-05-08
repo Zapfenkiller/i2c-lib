@@ -36,14 +36,22 @@
 //               FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
 //               OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ////////////////////////////////////////////////////////////////////////////////
+//  --- Doxygen ---
+/// \file   twi0_assert_stop_sequence.c
+/// \brief  TWI version of "bus release".
+////////////////////////////////////////////////////////////////////////////////
 
 
 #include "i2c_hw.h"
-#if defined (I2C_HW_TWI_H_INCLUDED) && defined (I2C0_HW_AS_MASTER)
+#if defined (I2C_HW_TWI_H_INCLUDED) && defined (I2C0_HW_AS_MASTER) || defined DOXYGEN_DOCU_IS_GENERATED
 #include "i2c_lib_private.h"
 #include <avr/io.h>
 
-// Release the bus by asserting a stop sequence.
+/// \brief
+/// Release the bus when in any master mode.
+/// \details
+/// Dedicated to TWI equipped devices.
+/// Makes the TWI to send a STOP condition to the bus.
 void twi0_assert_stop_sequence(void)
 {
     // Assert stop condition.

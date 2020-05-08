@@ -36,12 +36,31 @@
 //               FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
 //               OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ////////////////////////////////////////////////////////////////////////////////
+//  --- Doxygen ---
+/// \file   twi0_send_byte_slave.c
+/// \brief  Byte submission in slave mode.
+////////////////////////////////////////////////////////////////////////////////
 
 
 #include "i2c_hw.h"
-#if defined(I2C_HW_TWI_H_INCLUDED) && defined(I2C0_HW_AS_SLAVE) && !defined(I2C0_HW_AS_MASTER)
+#if defined(I2C_HW_TWI_H_INCLUDED) && defined(I2C0_HW_AS_SLAVE) && !defined(I2C0_HW_AS_MASTER) || defined DOXYGEN_DOCU_IS_GENERATED
 #include <avr/io.h>
 
+/// \brief
+/// Send one byte to the bus master.
+/// \details
+/// When addressed as slave one byte is returned to the master.
+/// The predefined amount of bytes is checked and in case of
+/// misalignements an error code is prepared.
+/// Dedicated to TWI equipped devices.
+/// \param dataByte contains the byte to send to the master.
+/// \param expectAck tells about the expected master ACK
+/// submission. '0' indicates the last byte to send (from the
+/// slave data set).
+/// \todo Check why here we have the `excpectAck` but not with the
+/// similar twi0_send_byte_slave_multi_master() routine.
+/// \todo Might it make more sense to not expect the ACK but just
+/// report the ACK status of the master?
 void twi0_send_byte_slave(uint8_t dataByte, uint8_t expectAck)
 {
     // Prepare data byte.

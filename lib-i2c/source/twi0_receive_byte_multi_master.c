@@ -36,17 +36,39 @@
 //               FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
 //               OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ////////////////////////////////////////////////////////////////////////////////
+//  --- Doxygen ---
+/// \file   twi0_receive_byte_multi_master.c
+/// \brief  Byte reception of multi master mode.
+////////////////////////////////////////////////////////////////////////////////
 
 
 #include "i2c_hw.h"
-#if defined(I2C_HW_TWI_H_INCLUDED) && defined(I2C0_HW_AS_MASTER) && !defined(I2C0_HW_SINGLE_MASTER)
+#if defined(I2C_HW_TWI_H_INCLUDED) && defined(I2C0_HW_AS_MASTER) && !defined(I2C0_HW_SINGLE_MASTER) || defined DOXYGEN_DOCU_IS_GENERATED
 #include "i2c_lib_private.h"
 #include <avr/io.h>
 
-// Receive one byte as a bus master.
-uint8_t twi0_receive_byte_multi_master(uint8_t sendAck)
+/// \brief
+/// Receive one byte as a bus master (multi master).
+/// \details
+/// Access the already opened slave to read one byte.
+/// Dedicated to TWI equipped devices.
+///
+/// According to the bus protocol the slave expects an 'ACK'
+/// to indicate a subsequent transfer will follow. A slave
+/// receiving a NACK response will assume that the actual data
+/// transfer is the final one (aka last byte).
+/// \param transferFollows sends an 'ACK' to the bus if set (!=0).
+/// \returns Byte read from bus.
+uint8_t twi0_receive_byte_multi_master(uint8_t transferFollows)
 {
-    uint8_t dataByte = twi0_receive_byte(sendAck);
+    // Start reception; select ACK option.
+    if (transferFollows)
+        I2C0_HW_CONTROL_REG = (1 << TWEN) | (1 << TWINT) | (1 << TWEA);
+    else
+        I2C0_HW_CONTROL_REG = (1 << TWEN) | (1 << TWINT);
+    // Wait until finished.
+    while (!(I2C0_HW_CONTROL_REG & (1 << TWINT))) {}
+    uint8_t dataByte = I2C0_HW_DATA_REG;
     switch (I2C0_HW_STATUS_REG & (0b11111<<TWS3))
     {
         case 0x50:  /* data successfully received, ACK sent */
@@ -60,6 +82,5 @@ uint8_t twi0_receive_byte_multi_master(uint8_t sendAck)
     }
     return(dataByte);
 }
-
 
 #endif /* defined(I2C_HW_TWI_H_INCLUDED) && defined(I2C0_HW_AS_MASTER) && !defined(I2C0_HW_SINGLE_MASTER) */

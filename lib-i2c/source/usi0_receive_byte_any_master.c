@@ -36,16 +36,31 @@
 //               FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
 //               OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ////////////////////////////////////////////////////////////////////////////////
+//  --- Doxygen ---
+/// \file   usi0_receive_byte_any_master.c
+/// \brief  Byte reception of any master mode.
+////////////////////////////////////////////////////////////////////////////////
 
 
 #include "i2c_hw.h"
-#if defined(I2C_HW_USI_H_INCLUDED) && defined(I2C0_HW_AS_MASTER)
+#if defined(I2C_HW_USI_H_INCLUDED) && defined(I2C0_HW_AS_MASTER) || defined DOXYGEN_DOCU_IS_GENERATED
 #include "i2c_lib_private.h"
 #include <avr/io.h>
 
 
-// Receive one byte as a bus master.
-uint8_t usi0_receive_byte_any_master(uint8_t sendAck)
+/// \brief
+/// Receive one byte as a bus master (multi master or single master).
+/// \details
+/// Access the already opened slave to read one byte.
+/// Dedicated to USI equipped devices.
+///
+/// According to the bus protocol the slave expects an 'ACK'
+/// to indicate a subsequent transfer will follow. A slave
+/// receiving a NACK response will assume that the actual data
+/// transfer is the final one (aka last byte).
+/// \param transferFollows sends an 'ACK' to the bus if set (!=0).
+/// \returns Byte read from bus.
+uint8_t usi0_receive_byte_any_master(uint8_t transferFollows)
 {
     USI0_SDA_DRIVER_DISABLE;
     I2C0_HW_CONTROL_REG = USI_HOLD_ON_ALL | USI_SAMPLE_ON_FALLING_EDGE;
@@ -57,14 +72,14 @@ uint8_t usi0_receive_byte_any_master(uint8_t sendAck)
     }
     uint8_t dataByte = I2C0_HW_DATA_REG;
     // Prepare ACK or NACK reply and send it.
-    if (sendAck)
+    if (transferFollows)
     {
         USI0_PULL_SDA;
         USI0_SDA_DRIVER_ENABLE;
     }
     usi0_wait_until_bit_done_as_multimaster();
     USI0_SDA_DRIVER_DISABLE;
-    if (!sendAck && (!(I2C0_HW_DATA_REG & 0x01)))
+    if (!transferFollows && (!(I2C0_HW_DATA_REG & 0x01)))
         i2c0_failure_info = I2C_ARBITRATION_LOST | I2C_NO_ACK;
     return(dataByte);
 }

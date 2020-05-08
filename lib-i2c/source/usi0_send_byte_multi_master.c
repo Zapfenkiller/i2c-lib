@@ -36,14 +36,31 @@
 //               FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
 //               OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ////////////////////////////////////////////////////////////////////////////////
+//  --- Doxygen ---
+/// \file   usi0_send_byte_multi_master.c
+/// \brief  Byte submission in multi master mode.
+////////////////////////////////////////////////////////////////////////////////
 
 
 #include "i2c_hw.h"
-#if defined(I2C_HW_USI_H_INCLUDED) && defined(I2C0_HW_AS_MASTER) && !defined(I2C0_HW_SINGLE_MASTER)
+#if defined(I2C_HW_USI_H_INCLUDED) && defined(I2C0_HW_AS_MASTER) && !defined(I2C0_HW_SINGLE_MASTER) || defined DOXYGEN_DOCU_IS_GENERATED
 #include "i2c_lib_private.h"
 #include <avr/io.h>
 
 
+/// \brief
+/// Submit one byte as a bus master (multi master).
+/// \details
+/// Access the already adressed slave to write one byte.
+/// Dedicated to USI equipped devices.
+///
+/// The slave is expected to always send an 'ACK' answer.
+/// Nope. *SMBus* spec allows a slave to NACK bytes in certain
+/// cases. One slave always shall ACK its own address(es).
+/// *I²C bus* specification is similar and allows any receiver
+/// to send a NACK in case it cannot accept the data.
+/// \todo Rework the ACK documentation.
+/// \param dataByte gets sent out.
 // Send one byte as a bus master aware of additional master devices that might
 // need to arbitrate with. The problem is the USIDC that is assumed to show
 // only during the SCL high phase (the datasheet gives no evidence for sampling

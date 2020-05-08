@@ -70,10 +70,10 @@
 /// Thus it is possible to reuse code already written (and tested) for a specific
 /// microcontroller on a different model without great effort.
 /// For example it makes no difference using an ATtiny2313 offering USI for an
-/// implementation of a certain SMB slave functionality and then change over to
-/// an ATmega168. Of course, some code sections need to be adapted to fulfill
-/// this task but the section dealing with the two wire bus interface can be
-/// reused without changes.
+/// implementation of a certain I<SUP>2</SUP>C slave functionality and then change
+/// over to an ATmega168. Of course, some code sections need to be adapted to
+/// fulfill this task but the section dealing with the two wire bus interface can
+/// be reused without changes.
 ///
 /// While development of this library took place - in fact it is based on a couple
 /// of projects using TWI, USI or even pure software emulation - it turned out
@@ -82,6 +82,13 @@
 /// currently only tested to comply with I<SUP>2</SUP>C standards.
 ///
 /// See i2c_hw.h on how to get using this library for your project(s).
+/// \todo Document the properties of the bus masters and slaves.
+/// Especially emphasize the clock stretching possibilities that
+/// the I²C spec just sets to be _optional_ for all devices.
+/// \todo Extract the doxygen `mainpage` section into a separate
+/// file.
+/// \todo Try to use the wording of the I²C-spec throughout this
+/// documentation.
 ///
 /// \file   i2c_hw.h
 /// \brief
@@ -307,13 +314,13 @@
 /// Initializes the hardware in accordance to the operation mode.
 /// \details
 /// Initializes the supporting hardware (TWI or USI) to operate as intended.
-/// The preassigned IO-lines are set up to form the open-drain drivers of the SCL
-/// and SDA bus lines.
+/// The preassigned IO-lines are set up to form the open-drain drivers of the
+/// SCL and SDA bus lines.
 ///
-/// Depending on the mode of operation some parameters are invalid and can be
-/// replaced by dummy values without causing issues.
+/// Depending on the mode of operation and depending on the underlying hardware
+/// support, some parameters are invalid and can be replaced by dummy values.
 ///
-/// Example when using Multi Master + Slave mode:
+/// Example when using Multi Master + Slave mode on a TWI enabled micro:
 /// \code
 /// #define I2C0_HW_AS_MASTER
 /// #define I2C0_HW_AS_SLAVE
@@ -330,6 +337,11 @@
 ///     ...
 /// }
 /// \endcode
+/// \note
+/// The `I2C0_BITRATE` and `I2C0_PRESCALER` definitions are predefined by the
+/// I²C library. You can override them by simply substituting your preferred
+/// settings.
+///
 /// Example when using Single Master mode:
 /// \code
 /// #define I2C0_HW_AS_MASTER
@@ -378,26 +390,30 @@
 /// \param slaveAddress assignes the address to react on as slave.
 /// According to the datasheets bit 0 decides if also listening to the general
 /// call address.
-/// Valid only if `I2C0_HW_AS_SLAVE` is defined.
+/// Valid only if `I2C0_HW_AS_SLAVE` is defined, ignored otherwise.
 /// \param slaveMask assignes a mask to set some address bits to 'don't care' thus
 /// getting an address range instead of a single address.
 /// This parameter might be not implemented on some controllers (e.g. ATmega8).
 /// Check the datasheet on TWI properties of your selected device.
-/// Valid only if `I2C0_HW_AS_SLAVE` is defined.
+/// Valid only if `I2C0_HW_AS_SLAVE` is defined, ignored otherwise.
 /// \param bitrate defines the fine prescaling to achieve the desired bus
 /// frequency.
 /// To aid programming `I2C0_BITRATE` is derived automatically from
 /// `F_I2C0_HW` and `F_CPU` definition.
-/// Valid only if `I2C0_HW_AS_MASTER` is defined.
-/// \note
-/// Please be aware that setting the bitrate on the fly is only possible when TWI
-/// hardware support is used. Using USI the bitrate is hardcoded when the lib is
-/// build and thus fixed when running the bus.
+/// Works only if `I2C0_HW_AS_MASTER` is defined on a TWI micro, ignored otherwise.
 /// \param prescaler defines the coarse prescaling to achieve the desired bus
 /// frequency.
 /// To aid programming `I2C0_PRESCALER` is derived automatically from
 /// `F_I2C0_HW` and `F_CPU` definition.
-/// Valid only if `I2C0_HW_AS_MASTER` is defined.
+/// Works only if `I2C0_HW_AS_MASTER` is defined on a TWI micro, ignored otherwise.
+/// \note
+/// Please be aware that setting the bitrate on the fly is only possible when TWI
+/// hardware support is used. Using USI the bitrate is hardcoded when the lib is
+/// build and thus fixed when running the bus.
+/// \todo
+/// bitrate and prescaler eventually should get omitted completely
+/// from the init. USI does not support it at all.
+/// (see also ToDo @ F_I2C0_HW)
 void hardI2c0_init(uint8_t slaveAddress, uint8_t slaveMask, uint8_t bitrate, uint8_t prescaler);
 
 
@@ -437,33 +453,35 @@ enum I2C_FAILURE_type hardI2c0_check4Error(void);
 
 /// \brief
 /// Puts one byte to the bus, checks for acknowledge.
-/// Dedicated to master mode usage.
+/// Dedicated to any master mode usage.
 /// \details
 /// One byte is sent to the bus using the I<SUP>2</SUP>C protocol.
 /// The slave is expected to send an 'ACK' answer.
 ///
 /// If an error occurs on the bus a failure code will be reported.
 /// This failure code can be checked by calling `hardI2c0_check4Error()`.
-/// \note This function is only available when `I2C0_HW_AS_MASTER` indicates
-/// master mode usage.
-/// \param dataByte to be sent to the slave.
+/// \note This function is only available when `I2C0_HW_AS_MASTER`
+/// indicates any master mode usage.
+/// \param dataByte to be sent to the already addressed slave.
+/// \sa hardI2c0_openDevice()
 /// \sa hardI2c0_getByteAsSlave()
 void hardI2c0_putByteAsMaster(uint8_t dataByte);
 
 
 /// \brief
 /// Returns one byte read from the bus.
-/// Dedicated to master mode usage.
+/// Dedicated to any master mode usage.
 /// \details
 /// The slave is read using the I<SUP>2</SUP>C protocol.
-/// According to the bus protocol the slave expects an 'ACK' to indicate subsequent
-/// transfers. A slave receiving a 'NACK' response will assume that the actual 
+/// According to the bus protocol the slave expects an 'ACK' to
+/// indicate subsequent transfers.
+/// A slave receiving a 'NACK' response will assume that the actual
 /// data transfer is the final one (aka last byte).
 ///
 /// If an error occurs on the bus a failure code will be reported.
 /// This failure code can be checked by calling `hardI2c0_check4Error()`.
-/// \note This function is only available when `I2C0_HW_AS_MASTER` indicates
-/// master mode usage.
+/// \note This function is only available when `I2C0_HW_AS_MASTER`
+/// indicates any master mode usage.
 /// \param sendAck enables sending an 'ACK' to the bus if set (!=0).
 /// \returns Byte read from bus slave.
 /// \sa hardI2c0_putByteAsSlave()
@@ -471,31 +489,35 @@ uint8_t hardI2c0_getByteAsMaster(uint8_t sendAck);
 
 
 /// \brief
-/// Addresses a certain slave. Returns its status.
-/// Dedicated to master mode usage.
+/// Addresses a certain slave. Returns access status.
+/// Dedicated to any master mode usage.
 /// \details
-/// According to the I<SUP>2</SUP>C bus protocol a 'START' sequence is given.
-/// Afterwards the slave address field plus the read/write bit is send.
-/// All slaves will monitor this address field and the one whose address matches
-/// will send an 'ACK'.
-/// As this starts accessing a dedicated slave the failure code(s) of previous
-/// accesses are cleared.
-/// The intended typical usage is to address a slave for read or write access and
-/// check that it is available. A code example might be like this:
+/// According to the I<SUP>2</SUP>C bus protocol a 'START' sequence
+/// is given.
+/// Afterwards the slave address field plus the read/write bit is
+/// send as supplied by `deviceAddress`.
+/// All slaves will monitor this address field and the one whose
+/// address matches will send an 'ACK'.
+/// As this starts accessing a dedicated slave the failure code(s)
+/// of previous accesses are cleared.
+/// The intended typical usage is to address a slave for subsequent
+/// read or write access and check that it is available.
+/// A code example might be like this:
 /// \code
 /// if (!hardI2c0_openDevice(I2C_EEPROM | I2C_READ_ACCESS))
 ///     ... // code executed when slave responds (and bus is okay)
 /// else
 ///    ... // code executed when slave not responding (or bus not okay)
 /// \endcode
-/// If a multi-master mode is selected then there is additional return
-/// information to consider:
-/// I2C_ARBITRATION_LOST generally indicates that another master won the bus
-/// access, I2C_ARBITRATION_LOST && !I2C_RESTARTED indicates the loss happens
+/// If a multi-master mode is selected then there is additional
+/// return information to consider:
+/// `I2C_ARBITRATION_LOST` generally indicates that another master won the bus
+/// access, `I2C_ARBITRATION_LOST && !I2C_RESTARTED` indicates the loss happens
 /// during a data byte.
-/// I2C_ARBITRATION_LOST && I2C_RESTARTED indicates that the loss
-/// of arbitration happened inside the address field and thus this master might
-/// be accessed as a slave when multi-master-plus-slave operation is selected.
+/// `I2C_ARBITRATION_LOST && I2C_RESTARTED` indicates that the loss
+/// of arbitration happened inside the address field and thus this
+/// master might be accessed as a slave when multi-master-plus-slave
+/// operation is desired.
 /// A more complex code example for multi-master-plus-slave mode might be like this:
 /// \code
 /// if (!hardI2c0_openDevice(I2C_EEPROM | I2C_READ_ACCESS))
@@ -516,23 +538,25 @@ uint8_t hardI2c0_getByteAsMaster(uint8_t sendAck);
 ///         }
 /// \endcode
 /// \note This function is only available when `I2C0_HW_AS_MASTER` indicates
-/// master mode usage.
-/// \param deviceAddress field of the desired slave including also the R/W-flag.
+/// any master mode usage.
+/// \param deviceAddress of the desired slave including also the R/W-flag.
 /// \returns Status of access attempt.
 /// \sa hardI2c0_check4Error()
+/// \sa hardI2c0_releaseBus()
 enum I2C_FAILURE_type hardI2c0_openDevice(uint8_t deviceAddress);
 
 
 /// \brief
 /// Releases the bus.
-/// Dedicated to master mode usage.
+/// Dedicated to any master mode usage.
 /// \details
 /// The bus is released by sending the 'STOP' sequence.
 ///
 /// If the bus can not be released a failure code will be dropped.
 /// This failure code can be checked by calling `hardI2c0_check4Error()`.
-/// \note This function is only available when `I2C0_HW_AS_MASTER` indicates
-/// master mode usage.
+/// \note This function is only available when `I2C0_HW_AS_MASTER`
+/// indicates any master mode usage.
+/// \sa hardI2c0_openDevice()
 void hardI2c0_releaseBus(void);
 
 #endif
@@ -697,9 +721,9 @@ void hardI2c0_setSlaveResponse(uint8_t on);
 ///
 /// #include "i2c_hw.h"
 /// \endcode
-#ifndef I2C0_HW_EMERGENCY_TIMEOUT_us
+#if !defined I2C0_HW_EMERGENCY_TIMEOUT_us || defined DOXYGEN_DOCU_IS_GENERATED
 #   define I2C0_HW_EMERGENCY_TIMEOUT_us 20000UL
-#   ifdef I2C0_HW_AS_MASTER
+#   if defined I2C0_HW_AS_MASTER
 #       warning "'I2C0_HW_EMERGENCY_TIMEOUT_us' found undefined. Now defaults to 20 ms."
 #   endif
 #endif
@@ -721,42 +745,50 @@ void hardI2c0_setSlaveResponse(uint8_t on);
 ///
 /// #include "i2c_hw.h"
 /// \endcode
-#ifndef F_I2C0_HW
+/// \todo
+/// When USI is used this does not work. The definition then shall
+/// be given already in the Makefile! Generally the Makefile is
+/// the better location for this. Since with USI the bitrate is
+/// fixed by compilation, does it make sense to keep the TWI open
+/// for such a change on the fly?
+#if !defined F_I2C0_HW || defined DOXYGEN_DOCU_IS_GENERATED
 #   define F_I2C0_HW 100000UL
-#   ifdef I2C0_HW_AS_MASTER
+#   if defined I2C0_HW_AS_MASTER
 #       warning "'F_I2C0_HW' found undefined. Now defaults to 100 kHz."
 #   endif
+#endif
+
+
+// Just for Doxygen :(
+#if defined DOXYGEN_DOCU_IS_GENERATED
+#include "i2c_hw_usi.h"
+#include "i2c_hw_twi.h"
 #endif
 
 
 // =============================================================================
 // All AVR devices with USI:
 // =============================================================================
-#if defined (__AVR_ATtiny2313__)
-#   include "i2c_hw_usi.h"
-#elif defined (__AVR_ATtiny26__)
-#   include "i2c_hw_usi.h"
-#elif defined (__AVR_ATmega169__)
-#   include "i2c_hw_usi.h"
+
+#if defined (__AVR_ATtiny2313__) || \
+   defined (__AVR_ATtiny26__) || \
+   defined (__AVR_ATmega169__)
+#  include "i2c_hw_usi.h"
 
 // =============================================================================
 // All AVR devices with TWI:
 // =============================================================================
 
-#elif defined (__AVR_ATmega8__)
-#   include "i2c_hw_twi.h"
-#elif defined (__AVR_ATmega48__)
-#   include "i2c_hw_twi.h"
-#elif defined (__AVR_ATmega88__)
-#   include "i2c_hw_twi.h"
-#elif defined (__AVR_ATmega168__)
-#   include "i2c_hw_twi.h"
-#elif defined (__AVR_ATmega328__)
-#   include "i2c_hw_twi.h"
+#elif defined (__AVR_ATmega8__) || \
+   defined (__AVR_ATmega48__) || \
+   defined (__AVR_ATmega88__) || \
+   defined (__AVR_ATmega168__) || \
+   defined (__AVR_ATmega328__)
+#  include "i2c_hw_twi.h"
 
 // =============================================================================
-// All AVR devices without any I2C hardware support, or unknown devices end up
-// here.
+// All AVR devices without any I2C hardware support, or yet unknown devices end
+// up here.
 // =============================================================================
 
 #else
@@ -765,14 +797,3 @@ void hardI2c0_setSlaveResponse(uint8_t on);
 
 
 #endif // I2C_HW_H_INCLUDED
-
-
-////////////////////////////////////////////////////////////////////////////////
-//  Revision history:
-//  -----------------
-//
-//  $Id:$
-//
-//  $Log:$
-//
-////////////////////////////////////////////////////////////////////////////////

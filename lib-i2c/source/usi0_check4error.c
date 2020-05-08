@@ -36,13 +36,22 @@
 //               FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
 //               OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ////////////////////////////////////////////////////////////////////////////////
+//  --- Doxygen ---
+/// \file   usi0_check4error.c
+/// \brief  USI version of bus failure reporting.
+////////////////////////////////////////////////////////////////////////////////
 
 
 #include "i2c_hw.h"
-#if defined (I2C_HW_USI_H_INCLUDED)
+#if defined (I2C_HW_USI_H_INCLUDED) || defined DOXYGEN_DOCU_IS_GENERATED
 #include "i2c_lib_private.h"
 
-// Retrieve errors occuring during last access.
+/// \brief
+/// Report the last bus transaction status.
+/// \details
+/// Dedicated to USI equipped devices.
+/// \returns failure code according to `I2C_FAILURE_type`.
+/// See `i2c_def.h`
 enum I2C_FAILURE_type usi0_check4Error(void)
 {
     return(i2c0_failure_info);

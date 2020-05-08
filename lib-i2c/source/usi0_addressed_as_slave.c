@@ -36,16 +36,37 @@
 //               FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
 //               OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ////////////////////////////////////////////////////////////////////////////////
+//  --- Doxygen ---
+/// \file   usi0_addressed_as_slave.c
+/// \brief  USI slave address scan - slave only mode
+////////////////////////////////////////////////////////////////////////////////
 
 
 #include "i2c_hw.h"
-#if defined (I2C_HW_USI_H_INCLUDED) && defined (I2C0_HW_AS_SLAVE) && !defined (I2C0_HW_AS_MASTER)
+#if defined (I2C_HW_USI_H_INCLUDED) && defined (I2C0_HW_AS_SLAVE) && !defined (I2C0_HW_AS_MASTER) || defined DOXYGEN_DOCU_IS_GENERATED
 #include "i2c_lib_private.h"
 #include <avr/io.h>
 
-// Check if USI detected its assigned address space. Return status of check:
-// 0 = not addressed, !0 = addressed.
-// Report address effectively received.
+/// \brief
+/// Check if addressed as a slave device when just being a slave.
+/// \details
+/// Dedicated to USI equipped devices.
+/// The next byte received will be interpreted as an address field
+/// if
+///
+/// * the USISIF just is set.
+///
+/// To keep track of bus changes the `i2c0_failure_info` is updated
+/// when a STOP is detected.
+/// \param addressReceived contains the assigned (base) address of
+/// slave response(s). Used to report the complete address received
+/// in case the slave responds to an address range.
+/// If bit 0 is set the slave also answers to the 'general call'
+/// address (0).
+/// \param slaveMask excludes all bits *set* as invalid for the
+/// address comparison.
+/// \returns selection state, ~0 if selected, 0 if not.
+
 uint8_t usi0_addressed_as_slave(uint8_t *addressReceived, uint8_t slaveMask)
 {
     I2C0_HW_CONTROL_REG = USI_HOLD_ON_START | USI_SAMPLE_ON_FALLING_EDGE;

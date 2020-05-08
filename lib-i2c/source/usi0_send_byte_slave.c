@@ -36,15 +36,31 @@
 //               FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
 //               OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ////////////////////////////////////////////////////////////////////////////////
+//  --- Doxygen ---
+/// \file   usi0_send_byte_slave.c
+/// \brief  Byte submission in slave mode.
+////////////////////////////////////////////////////////////////////////////////
 
 
 #include "i2c_hw.h"
-#if defined(I2C_HW_USI_H_INCLUDED) && defined(I2C0_HW_AS_SLAVE)
+#if defined(I2C_HW_USI_H_INCLUDED) && defined(I2C0_HW_AS_SLAVE) || defined DOXYGEN_DOCU_IS_GENERATED
 #include "i2c_lib_private.h"
 #include <avr/io.h>
 
 
-// Send one byte to the bus when in slave mode.
+/// \brief
+/// Send one byte to the bus master.
+/// \details
+/// When addressed as slave one byte is returned to the master.
+/// The predefined amount of bytes is checked and in case of
+/// misalignements an error code is prepared.
+/// Dedicated to USI equipped devices.
+/// \param dataByte contains the byte to send to the master.
+/// \param expectAck tells about the expected master ACK
+/// submission. '0' indicates the last byte to send (from the
+/// slave data set).
+/// \todo Might it make more sense to not expect the ACK but just
+/// report the ACK status of the master?
 void usi0_send_byte_slave(uint8_t dataByte)
 {
     I2C0_HW_CONTROL_REG = USI_HOLD_ON_ALL | USI_SAMPLE_ON_RISING_EDGE;

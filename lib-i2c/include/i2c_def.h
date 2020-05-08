@@ -58,24 +58,35 @@
 
 /// \brief
 /// The definition of the read/write access bit state for writing.
-#define I2C_WRITE_ACCESS    0
+#define I2C_WRITE_ACCESS      0
 
 
 /// \brief
 /// The definition of the read/write access bit state for reading.
-#define I2C_READ_ACCESS     1
+#define I2C_READ_ACCESS       1
 
 
 /// \brief
 /// The definition for sending an 'ACK' response.
-#define I2C_SEND_ACK        ~0
+#define I2C_SEND_ACK          ~0
 
 
 /// \brief
 /// The definition for not sending an 'ACK' response.
-#define I2C_SEND_NO_ACK     0
+#define I2C_SEND_NO_ACK       0
 
 
+// \brief
+// The definition of the acknowledge bit state for 'ACK'.
+//#define I2C_ACKNOWLEDGE       0
+
+
+// \brief
+// The definition of the acknowledge bit state for 'NACK'.
+//#define I2C_NO_ACKNOWLEDGE    1
+
+
+/// \brief
 /// Failure and status codes of I<SUP>2</SUP>C library routines.
 /// \note The flags `I2C_ARBITRATION_LOST` and `I2C_RESTARTED` set simultaneously
 /// indicate  the case of master arbitration loss while sending out the address
@@ -99,14 +110,3 @@ enum I2C_FAILURE_type
 };
 
 #endif // I2C_DEF_H_INCLUDED
-
-
-////////////////////////////////////////////////////////////////////////////////
-//  Revision history:
-//  -----------------
-//
-//  $Id:$
-//
-//  $Log:$
-//
-////////////////////////////////////////////////////////////////////////////////

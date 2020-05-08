@@ -36,22 +36,44 @@
 //               FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
 //               OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ////////////////////////////////////////////////////////////////////////////////
+//  --- Doxygen ---
+/// \file   usi0_check_4_slave_address_match_multi_master.c
+/// \brief  Check if received address matches the assigned one.
+////////////////////////////////////////////////////////////////////////////////
 
 
 #include "i2c_hw.h"
-#if defined(I2C_HW_USI_H_INCLUDED) && defined(I2C0_HW_AS_MASTER) && !defined(I2C0_HW_SINGLE_MASTER)
+#if defined(I2C_HW_USI_H_INCLUDED) && defined(I2C0_HW_AS_MASTER) && !defined(I2C0_HW_SINGLE_MASTER) || defined DOXYGEN_DOCU_IS_GENERATED
 #include "i2c_lib_private.h"
 #include <avr/io.h>
 
 
-// Assume the byte in the receving register to be a slave address.
+/// \brief
+/// Performs address matching check when being a master addressed
+/// as slave.
+/// \details
+/// Checks the address received and if it matches the assigned own
+/// address (address range) it sends `ACK` to the bus. Otherwise
+/// the access is `NACK`ed.
+/// To keep track of bus changes the `i2c0_failure_info` is updated
+/// when a STOP is detected.
+/// Dedicated to USI equipped devices.
+/// \param addressReceived contains the assigned (base) address of
+/// slave response(s). Used to report the complete address received
+/// in case the slave responds to an address range.
+/// If bit 0 is set the slave also answers to the 'general call'
+/// address (0).
+/// \param slaveMask excludes all bits *set* as invalid for the
+/// address comparison.
+/// \returns selection state, ~0 if selected, 0 if not.
+// Assume the byte in the receiving register to be a slave address.
 // Check if this address matches the assigned address space.
 // Return status of check:
-// 0 = not addressed, !0 = addressed.
+// 0 = not addressed, ~0 = addressed.
 // Report address effectively received.
 // Handles ACK / NACK to the bus!
 // ==============================
-uint8_t usi0_check_4_slave_address_match_multi_master(uint8_t *addressReceived, uint8_t slaveMask)
+uint8_t usi0_check_4_slave_address_match_multi_master(uint8_t* addressReceived, uint8_t slaveMask)
 {
     // Prepare pattern for address comparison later on.
     uint8_t addr = *addressReceived & ~slaveMask & 0xFE;
@@ -74,7 +96,7 @@ uint8_t usi0_check_4_slave_address_match_multi_master(uint8_t *addressReceived, 
         USI0_RELEASE_SDA;
         return(~0);
     }
-    i2c0_failure_info |= I2C_RESTARTED; // here means "bus is occupied"
+    i2c0_failure_info |= I2C_RESTARTED; // here means "bus is occupied" by another master
     I2C0_HW_CONTROL_REG = USI_HOLD_ON_START | USI_SAMPLE_ON_FALLING_EDGE;
     return(0);
 }

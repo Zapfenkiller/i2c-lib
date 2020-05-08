@@ -36,15 +36,24 @@
 //               FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
 //               OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ////////////////////////////////////////////////////////////////////////////////
+//  --- Doxygen ---
+/// \file   usi0_assert_stop_sequence.c
+/// \brief  USI version of "bus release".
+////////////////////////////////////////////////////////////////////////////////
 
 
 #include "i2c_hw.h"
-#if defined (I2C_HW_USI_H_INCLUDED) && defined (I2C0_HW_AS_MASTER)
+#if defined (I2C_HW_USI_H_INCLUDED) && defined (I2C0_HW_AS_MASTER) || defined DOXYGEN_DOCU_IS_GENERATED
 #include <avr/io.h>
 #include <util/delay.h>
 
 
-// Release the bus by asserting a stop sequence.
+/// \brief
+/// Release the bus when in any master mode.
+/// \details
+/// Send a STOP condition to the bus.
+/// Respect clock stretching eventually done by slower slave(s).
+/// Dedicated to USI equipped devices.
 void usi0_assert_stop_sequence(void)
 {
     USI0_PULL_SDA;
@@ -55,7 +64,6 @@ void usi0_assert_stop_sequence(void)
     while(I2C0_SCL_IS_LOW) {}
     USI0_HALFBIT_DELAY;
     USI0_SDA_DRIVER_DISABLE;
-//  USI0_RELEASE_SDA;
 }
 
 

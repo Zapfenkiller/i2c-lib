@@ -36,14 +36,30 @@
 //               FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
 //               OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ////////////////////////////////////////////////////////////////////////////////
+//  --- Doxygen ---
+/// \file   usi0_open_device_multi_master.c
+/// \brief  Start accessing a certain slave in a multi master mode.
+////////////////////////////////////////////////////////////////////////////////
 
 
 #include "i2c_hw.h"
-#if defined(I2C_HW_USI_H_INCLUDED) && defined(I2C0_HW_AS_MASTER) && !defined(I2C0_HW_SINGLE_MASTER)
+#if defined(I2C_HW_USI_H_INCLUDED) && defined(I2C0_HW_AS_MASTER) && !defined(I2C0_HW_SINGLE_MASTER) || defined DOXYGEN_DOCU_IS_GENERATED
 #include "i2c_lib_private.h"
 #include <avr/io.h>
 #include <util/delay.h>
 
+/// \brief
+/// Start access to a certain slave. Valid for any multi master bus
+/// mode.
+/// \details
+/// Asserts a start sequence to the bus, followed by the slave
+/// address. Keeps track of the various states that could arise
+/// from the slave / bus reaction.
+/// Dedicated to USI equipped devices.
+/// \param deviceAddress defines which slave to access. It shall
+/// define the READ or WRITE mode also.
+/// \returns failure code according to `I2C_FAILURE_type`.
+/// See `i2c_def.h`
 // Prepare for (re)start sequence.
 // Check if the bus is available.
 // Address a certain slave.
@@ -58,6 +74,7 @@ enum I2C_FAILURE_type usi0_open_device_multi_master(uint8_t deviceAddress)
     }
     if (i2c0_failure_info & (I2C_RESTARTED | I2C_ARBITRATION_LOST))
         return(i2c0_failure_info);
+    // Prepare SCL for a (RE)START sequence.
     USI0_SDA_DRIVER_DISABLE;
     USI0_HALFBIT_DELAY;
     I2C0_HW_CONTROL_REG = USI_HOLD_ON_START | USI_SAMPLE_ON_FALLING_EDGE;

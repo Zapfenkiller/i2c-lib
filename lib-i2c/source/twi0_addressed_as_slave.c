@@ -36,17 +36,26 @@
 //               FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
 //               OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ////////////////////////////////////////////////////////////////////////////////
+//  --- Doxygen ---
+/// \file   twi0_addressed_as_slave.c
+/// \brief  TWI slave address scan - slave only mode
+////////////////////////////////////////////////////////////////////////////////
 
 
 #include "i2c_hw.h"
-#if defined (I2C_HW_TWI_H_INCLUDED) && defined (I2C0_HW_AS_SLAVE) && !defined (I2C0_HW_AS_MASTER)
+#if defined (I2C_HW_TWI_H_INCLUDED) && defined (I2C0_HW_AS_SLAVE) && !defined (I2C0_HW_AS_MASTER) || defined DOXYGEN_DOCU_IS_GENERATED
 #include "i2c_lib_private.h"
 #include <avr/io.h>
 
-// Check if TWI detected its assigned address space. Return status of check:
-// 0 = not addressed, !0 = addressed.
-// Report address effectively received.
-uint8_t twi0_addressed_as_slave (uint8_t *addressReceived)
+/// \brief
+/// Check if addressed as a slave device when just being a slave.
+/// \details
+/// Dedicated to TWI equipped devices.
+/// \param addressReceived contains the assigned (base) address of
+/// slave response(s). Used to report the complete address received
+/// in case the slave responds to an address range.
+/// \returns selection state, ~0 if selected, 0 if not.
+uint8_t twi0_addressed_as_slave (uint8_t* addressReceived)
 {
     i2c0_failure_info = I2C_SUCCESS;
     switch (I2C0_HW_STATUS_REG & (0b11111<<TWS3))

@@ -36,13 +36,30 @@
 //               FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
 //               OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ////////////////////////////////////////////////////////////////////////////////
+//  --- Doxygen ---
+/// \file   twi0_receive_byte_slave.c
+/// \brief  Byte reception of slave mode.
+////////////////////////////////////////////////////////////////////////////////
 
 
 #include "i2c_hw.h"
-#if defined(I2C_HW_TWI_H_INCLUDED) && defined(I2C0_HW_AS_SLAVE) && !defined(I2C0_HW_AS_MASTER)
+#if defined(I2C_HW_TWI_H_INCLUDED) && defined(I2C0_HW_AS_SLAVE) && !defined(I2C0_HW_AS_MASTER) || defined DOXYGEN_DOCU_IS_GENERATED
 #include <avr/io.h>
 
-// Receive one byte as slave.
+/// \brief
+/// Receive one byte as a slave device.
+/// \details
+/// Receive one byte from the master when addressed as slave device.
+/// Dedicated to TWI equipped devices.
+///
+/// \todo
+/// The slave is expected to always send an 'ACK' answer. ??
+/// So why is there a parameter to decide if ACK is sent back?
+/// Nope.
+/// Rework this completely, we similar places already. See there
+/// how to write it.
+/// \param sendAck sends an 'ACK' to the bus if set (!=0).
+/// \returns Byte read from bus.
 uint8_t twi0_receive_byte_slave(uint8_t sendAck)
 {
     // Start reception; select ACK option.

@@ -35,7 +35,6 @@
 //               ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 //               FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
 //               OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-//
 ////////////////////////////////////////////////////////////////////////////////
 //  --- Doxygen ---
 /// \file   i2c_hw_usi.h
@@ -47,9 +46,8 @@
 /// This file contains definitions for ease of I<SUP>2</SUP>C library subroutines
 /// programming, usage and code readability when handling USI hardware.
 ///
-/// This header file is needed for the library routines to compile but not for
-/// using the library. So this documentation addresses to the library developer
-/// and can be ignored by the library user.
+/// This header file is needed for the library routines to compile but not
+/// included by the user application when suing the library.
 ////////////////////////////////////////////////////////////////////////////////
 
 
@@ -59,15 +57,6 @@
 
 #include "i2c_def.h"
 #include <inttypes.h>
-
-/// \brief
-/// The definition of the acknowledge bit state for 'ACK'.
-#define I2C_ACKNOWLEDGE                 0
-
-
-/// \brief
-/// The definition of the acknowledge bit state for 'NACK'.
-#define I2C_NO_ACKNOWLEDGE              1
 
 
 /// \brief
@@ -243,60 +232,60 @@
 #define USI_COUNT_FOR_A_BIT_MASTER      15
 
 
-/// \brief
-/// Wait for transfer to finish.
-/// \details
-/// While in slave mode the slave has to wait until a certain count of bits is
-/// transferred.
-/// This transfer is fully controlled by the master, so there is a chance the master
-/// aborts the byte.
-/// The handling of this abortion is also done.
-/// Since this is a central functionality needed several times in checking for
-/// addressfield (is the slave addressed?) and subsequent data read/write cycles
-/// it makes sense to have this coded as helper function.
-///
-/// \param countOfEdges needs to be set in accordance to the amount of bits to
-/// be transferred.
-/// <TABLE>
-/// <TR>
-/// <TD><b>Count of bits</b></TD>
-/// <TD><b>1</b></TD>
-/// <TD>2</TD>
-/// <TD>3</TD>
-/// <TD>4</TD>
-/// <TD>5</TD>
-/// <TD>6</TD>
-/// <TD>7</TD>
-/// <TD><b>8</b></TD>
-/// </TR>
-/// <TR>
-/// <TD>Preset to USICNT[3:0]\n(<b>countOfEdges</b>)</TD>
-/// <TD><b>14</b></TD>
-/// <TD>12</TD>
-/// <TD>10</TD>
-/// <TD>8</TD>
-/// <TD>6</TD>
-/// <TD>4</TD>
-/// <TD>2</TD>
-/// <TD><b>0</b></TD>
-/// </TR>
-/// </TABLE>
-/// See also\n
-/// ::USI_COUNT_FOR_A_BYTE_SLAVE or\n
-/// ::USI_COUNT_FOR_A_BIT_SLAVE\n
-/// for useful predefinitions.
+// \brief
+// Wait for transfer to finish.
+// \details
+// While in slave mode the slave has to wait until a certain count of bits is
+// transferred.
+// This transfer is fully controlled by the master, so there is a chance the master
+// aborts the byte.
+// The handling of this abortion is also done.
+// Since this is a central functionality needed several times in checking for
+// addressfield (is the slave addressed?) and subsequent data read/write cycles
+// it makes sense to have this coded as helper function.
+//
+// \param countOfEdges needs to be set in accordance to the amount of bits to
+// be transferred.
+// <TABLE>
+// <TR>
+// <TD><b>Count of bits</b></TD>
+// <TD><b>1</b></TD>
+// <TD>2</TD>
+// <TD>3</TD>
+// <TD>4</TD>
+// <TD>5</TD>
+// <TD>6</TD>
+// <TD>7</TD>
+// <TD><b>8</b></TD>
+// </TR>
+// <TR>
+// <TD>Preset to USICNT[3:0]\n(<b>countOfEdges</b>)</TD>
+// <TD><b>14</b></TD>
+// <TD>12</TD>
+// <TD>10</TD>
+// <TD>8</TD>
+// <TD>6</TD>
+// <TD>4</TD>
+// <TD>2</TD>
+// <TD><b>0</b></TD>
+// </TR>
+// </TABLE>
+// See also\n
+// ::USI_COUNT_FOR_A_BYTE_SLAVE or\n
+// ::USI_COUNT_FOR_A_BIT_SLAVE\n
+// for useful predefinitions.
 uint8_t usi0_wait_until_transfer_done_as_slave(uint8_t countOfEdges);
 
 
-/// \brief
-/// Control of bit to send or receive.
-/// \details
-/// While in (multi) master mode the master has to control SCL for a bit to get
-/// sent or received. It also has to check for bus contention. If contention is
-/// detected the master retires from the bus with one of those failure codes:
-/// I2C_PROTOCOL_FAIL | I2C_RESTARTED if a START condition is detected
-/// I2C_PROTOCOL_FAIL | I2C_STOPPED if a STOP condition is detected
-/// i2c0_failure_info is updated accordingly.
+// \brief
+// Control of bit to send or receive.
+// \details
+// While in (multi) master mode the master has to control SCL for a bit to get
+// sent or received. It also has to check for bus contention. If contention is
+// detected the master retires from the bus with one of those failure codes:
+// I2C_PROTOCOL_FAIL | I2C_RESTARTED if a START condition is detected
+// I2C_PROTOCOL_FAIL | I2C_STOPPED if a STOP condition is detected
+// i2c0_failure_info is updated accordingly.
 void usi0_wait_until_bit_done_as_multimaster(void);
 
 

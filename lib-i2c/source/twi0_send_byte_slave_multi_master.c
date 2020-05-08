@@ -36,13 +36,24 @@
 //               FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
 //               OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ////////////////////////////////////////////////////////////////////////////////
+//  --- Doxygen ---
+/// \file   twi0_send_byte_slave_multi_master.c
+/// \brief  Byte submission when capable master is addressed as slave.
+////////////////////////////////////////////////////////////////////////////////
 
 
 #include "i2c_hw.h"
-#if defined(I2C_HW_TWI_H_INCLUDED) && defined(I2C0_HW_AS_SLAVE) && defined(I2C0_HW_AS_MASTER)
+#if defined(I2C_HW_TWI_H_INCLUDED) && defined(I2C0_HW_AS_SLAVE) && defined(I2C0_HW_AS_MASTER) || defined DOXYGEN_DOCU_IS_GENERATED
 #include "i2c_lib_private.h"
 #include <avr/io.h>
 
+/// \brief
+/// Send one byte to the bus master.
+/// \details
+/// When addressed as slave one byte is returned to the master.
+/// Dedicated to TWI equipped devices.
+/// \todo See twi0_send_byte_slave() and the `expectAck` topic.
+/// \param dataByte contains the byte to send to the master.
 void twi0_send_byte_slave_multi_master(uint8_t dataByte)
 {
     twi0_send_byte(dataByte);

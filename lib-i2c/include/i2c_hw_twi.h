@@ -39,13 +39,15 @@
 //  --- Doxygen ---
 /// \file   i2c_hw_twi.h
 /// \brief
-/// A collection of useful things internal to the I<SUP>2</SUP>C library.
+/// A collection of useful things internal to the I<SUP>2</SUP>C library's TWI
+/// section.
 /// \details
 /// Based on an older version of 2006 the I<SUP>2</SUP>C library had been rewritten.
 /// This file contains definitions for ease of I<SUP>2</SUP>C library subroutines
-/// programming, usage and code readability.
+/// programming, usage and code readability when handling TWI hardware.
 ///
-/// It is needed for the library routines to compile but not for using the library.
+/// This header file is needed for the library routines to compile but not
+/// included by the user application when suing the library.
 ////////////////////////////////////////////////////////////////////////////////
 
 
@@ -56,24 +58,15 @@
 #include "i2c_def.h"
 #include <inttypes.h>
 
+
 /// \brief
 /// A shortcut to aid enabling the TWI.
 #define I2C0_ENABLE                 I2C0_HW_CONTROL_REG = (1 << TWEN) | slaveAckControl;
 
 
 /// \brief
-/// A chortcut to aid disabling the TWI.
+/// A shortcut to aid disabling the TWI.
 #define I2C0_DISABLE                I2C0_HW_CONTROL_REG = 0;
-
-
-/// \brief
-/// The definition of the acknowledge bit state for 'ACK'.
-#define I2C_ACKNOWLEDGE             0
-
-
-/// \brief
-/// The definition of the acknowledge bit state for 'NACK'.
-#define I2C_NO_ACKNOWLEDGE          1
 
 
 /// \brief
@@ -81,34 +74,9 @@
 #define I2C0_WAITING_FOR_SLAVE      (!(I2C0_HW_READBACK & (1 << I2C0_HW_SCL_BIT)))
 
 
-/// \brief
-/// Sends one byte to the bus.
-/// \details
-/// One byte is sent to the bus using the I<SUP>2</SUP>C protocol.
-/// The slave is expected to send an 'ACK' answer.
-///
-/// This function merely serves as a subroutine for the different operation modes.
-/// It does not do any failure checking since this depends on the state of
-/// the TWI hardware.
-/// \param dataByte to be sent to the slave.
+// Some prototypes, used in the lib routines. Documented in their files.
 void twi0_send_byte(uint8_t dataByte);
-
-
-/// \brief
-/// Returns one byte read from the bus.
-/// \details
-/// The slave is read using the I<SUP>2</SUP>C protocol.
-/// According to the bus protocol the slave expects an 'ACK' to indicate subsequent
-/// transfers. A slave receiving a NACK response will assume that the actual 
-/// data transfer is the final one (aka last byte).
-///
-/// This function merely serves as a subroutine for the different operation modes.
-/// It does not do any failure checking since this depends on the state of
-/// the TWI hardware.
-/// \param finalTransfer will suppress an 'ACK' to the bus if set (!=0).
-/// \returns
-/// Byte read from bus slave.
-uint8_t twi0_receive_byte(uint8_t finalTransfer);
+//uint8_t twi0_receive_byte(uint8_t transferFollows);
 
 
 // =============================================================================
@@ -278,14 +246,3 @@ void twi0_assert_stop_sequence(void);
 
 
 #endif // I2C_HW_TWI_H_INCLUDED
-
-
-////////////////////////////////////////////////////////////////////////////////
-//  Revision history:
-//  -----------------
-//
-//  $Id:$
-//
-//  $Log:$
-//
-////////////////////////////////////////////////////////////////////////////////

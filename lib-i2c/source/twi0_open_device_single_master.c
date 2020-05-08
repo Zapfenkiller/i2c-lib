@@ -36,14 +36,27 @@
 //               FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
 //               OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ////////////////////////////////////////////////////////////////////////////////
+//  --- Doxygen ---
+/// \file   twi0_open_device_single_master.c
+/// \brief  Start accessing a certain slave in the single master mode.
+////////////////////////////////////////////////////////////////////////////////
 
 
 #include "i2c_hw.h"
-#if defined(I2C_HW_TWI_H_INCLUDED) && !defined(I2C0_HW_AS_SLAVE) && defined(I2C0_HW_AS_MASTER) && defined(I2C0_HW_SINGLE_MASTER)
+#if defined(I2C_HW_TWI_H_INCLUDED) && !defined(I2C0_HW_AS_SLAVE) && defined(I2C0_HW_AS_MASTER) && defined(I2C0_HW_SINGLE_MASTER) || defined DOXYGEN_DOCU_IS_GENERATED
 #include "i2c_lib_private.h"
 #include <avr/io.h>
 
-// Address a certain slave. Return its status. This also occupies the bus.
+/// \brief
+/// Start access to a certain slave. Valid for a single bus master.
+/// \details
+/// Asserts a start sequence to the bus, followed by the slave
+/// address.
+/// Dedicated to TWI equipped devices.
+/// \param deviceAddress defines which slave to access. It shall
+/// define the READ or WRITE mode also.
+/// \returns failure code according to `I2C_FAILURE_type`.
+/// See `i2c_def.h`
 enum I2C_FAILURE_type twi0_open_device_single_master(uint8_t deviceAddress)
 {
     // Clear previous failures.

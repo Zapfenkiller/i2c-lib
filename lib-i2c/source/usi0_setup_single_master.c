@@ -37,17 +37,30 @@
 //               FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
 //               OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ////////////////////////////////////////////////////////////////////////////////
+//  --- Doxygen ---
+/// \file   usi0_setup_single_master.c
+/// \brief  Initializes the bus master.
+////////////////////////////////////////////////////////////////////////////////
 
 
 #include "i2c_hw.h"
-#if defined(I2C_HW_USI_H_INCLUDED) && !defined(I2C0_HW_AS_SLAVE) && defined(I2C0_HW_AS_MASTER) && defined(I2C0_HW_SINGLE_MASTER)
+#if defined(I2C_HW_USI_H_INCLUDED) && !defined(I2C0_HW_AS_SLAVE) && defined(I2C0_HW_AS_MASTER) && defined(I2C0_HW_SINGLE_MASTER) || defined DOXYGEN_DOCU_IS_GENERATED
 #include <avr/io.h>
 
 
+/// \brief
+/// Initializes a master without any slave response.
+/// \details
+/// The hardware is set up for the predefined operation mode and
+/// parameters.
+/// Dedicated to USI equipped devices.
+///
+/// \todo Check if this can get combined with the master+slave
+/// init.
 // Initialize the IO-lines and the bus.
 void usi0_setup_single_master(void)
 {
-    // setup does not disrupt any I²C transfer!
+    // setup does not disrupt any IÂ²C transfer!
     I2C0_HW_DDR &= ~((1 << I2C0_HW_SDA_BIT) | ( 1 << I2C0_HW_SCL_BIT));
     I2C0_HW_PORT |= ((1 << I2C0_HW_SDA_BIT) | ( 1 << I2C0_HW_SCL_BIT));
     // Enable SCL to drive the bus, SDA is kept recessive.
