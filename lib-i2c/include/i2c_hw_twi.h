@@ -96,12 +96,25 @@ void twi0_send_byte(uint8_t dataByte);
 #   define I2C0_HW_DATA_REG             TWDR
 #   define I2C0_HW_STATUS_REG           TWSR
 
-#elif defined (__AVR_ATmega328__) || (__AVR_ATmega168__) || defined (__AVR_ATmega88__) || defined (__AVR_ATmega48__)
+#elif defined (__AVR_ATmega328__) || defined (__AVR_ATmega168__) || defined (__AVR_ATmega88__) || defined (__AVR_ATmega48__)
 #   define I2C0_HW_PORT                 PORTC
 #   define I2C0_HW_READBACK             PINC
 #   define I2C0_HW_DDR                  DDRC
 #   define I2C0_HW_SCL_BIT              5
 #   define I2C0_HW_SDA_BIT              4
+#   define I2C0_HW_SLAVE_ADDRESS_REG    TWAR
+#   define I2C0_HW_SLAVE_ADDRESS_MASK   TWAMR
+#   define I2C0_HW_BITRATE_REG          TWBR
+#   define I2C0_HW_CONTROL_REG          TWCR
+#   define I2C0_HW_DATA_REG             TWDR
+#   define I2C0_HW_STATUS_REG           TWSR
+
+#elif defined (__AVR_ATmega16U4__) || defined (__AVR_ATmega32U4__)
+#   define I2C0_HW_PORT                 PORTD
+#   define I2C0_HW_READBACK             PIND
+#   define I2C0_HW_DDR                  DDRD
+#   define I2C0_HW_SCL_BIT              0
+#   define I2C0_HW_SDA_BIT              1
 #   define I2C0_HW_SLAVE_ADDRESS_REG    TWAR
 #   define I2C0_HW_SLAVE_ADDRESS_MASK   TWAMR
 #   define I2C0_HW_BITRATE_REG          TWBR
