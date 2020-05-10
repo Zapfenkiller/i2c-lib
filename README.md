@@ -13,13 +13,18 @@ out the I²C operation modes supported:
 The Multiple-Master modes all feature bus arbitration in case of
 simultaneous accesses.
 
-Use hardware modules on the micro. Make hardware transparent to
-the application. One application could compile for different
-micros without changes to the source code - at least for the I²C
-parts!
+Use hardware modules on the micro, dedicated to I²C support:
 
 * USI
 * TWI
+
+Make hardware support transparent to the application. One
+application could compile for different micros without changes to
+the source code - at least for the I²C parts!
+For example a simple master application currently compiled for an
+ATtiny2313 can be compiled for an ATmega48 by just changing some
+Makefile settings. Of course, environment changes (e. g. LED
+or pushbutton connections) need to be reflected, too.
 
 Currently verified with:
 
@@ -32,7 +37,6 @@ Prepared already for:
 * ATmega8      (TWI)
 * ATmega48     (TWI)
 * ATmega88     (TWI)
-* ATmega168    (TWI)
 * ATmega328    (TWI)
 * ATtiny26     (USI)
 * ATmega169    (USI)
@@ -47,8 +51,15 @@ Status 3.5.2020:
 *  `multi-master-demo/` - benötigt debugging und Verifikation
 *  `multi-master-slave-demo/` - könnte auf Anhieb laufen
 *  `example-usage-demo` - leer
-Welche Lizenz? Die Lib unter der MIT wie LUFA, aber die Demos
-unter CC-no-commercial?
+
+//i2c_hw.h (multimaster+slave)
+//               [ ] R0 = first draft
+//               [ ] R1 = able to compile and link
+//               [ ] R2 = running stable
+//               [x] R3 = working as intended
+//               [ ] R4 = documentation complete
+//               [ ] R5 = final release
+
 ----------------
 
 The Library itself is contained below the path `lib-i2c/`.
