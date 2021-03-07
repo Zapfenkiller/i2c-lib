@@ -30,7 +30,6 @@ Currently verified with:
 
 * ATtiny2313   (USI)
 * ATmega168    (TWI)
-* [ATmega32U4   (TWI) - soon to come]
 
 Prepared already for:
 
@@ -40,27 +39,13 @@ Prepared already for:
 * ATmega328    (TWI)
 * ATtiny26     (USI)
 * ATmega169    (USI)
+* ATmega32U4   (TWI)
 
 In theory those should immediately work, but this is still not
 verified. Micros not listed just lack their appropriate 
 definitions and can get added.
 
-----------------
-Status 3.5.2020:
-*  `single-master-demo/` - in Arbeit, SM sieht gut aus, SL fehlt
-*  `multi-master-demo/` - benötigt debugging und Verifikation
-*  `multi-master-slave-demo/` - könnte auf Anhieb laufen
-*  `example-usage-demo` - leer
-
-//i2c_hw.h (multimaster+slave)
-//               [ ] R0 = first draft
-//               [ ] R1 = able to compile and link
-//               [ ] R2 = running stable
-//               [x] R3 = working as intended
-//               [ ] R4 = documentation complete
-//               [ ] R5 = final release
-
-----------------
+-------
 
 The Library itself is contained below the path `lib-i2c/`.
 You find there its `includes` and `sources` in case you want to
@@ -158,9 +143,5 @@ Fragen bleiben. Ausser vielleicht die Frage nach: "Warum gibt es die
 Lib erst jetzt im Netz?"
 
 Ein schneller Steifzug eben brachte sowohl reine SW-Libs als auch
-einige TWI-Libs. Alle nur als Master brauchbar. USI ist gar nicht
-zu finden. Hm, richtig beworben und platziert, könnte das ein Hammer
-werden!
-
-Ein Sparkfun ProMicro als USB-Userport der den PC als I²C-Slave
-nutzbar macht ...
+einige TWI-Libs. Alle nur als Single Master brauchbar. USI ist gar
+nicht zu finden.
