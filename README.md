@@ -39,22 +39,26 @@ Prepared already for:
 * ATmega328    (TWI)
 * ATtiny26     (USI)
 * ATmega169    (USI)
+* ATmeag16U4   (TWI)
 * ATmega32U4   (TWI)
 
 In theory those should immediately work, but this is still not
 verified. Micros not listed just lack their appropriate 
-definitions and can get added.
+definitions and can get added in `lib-i2c/includes/i2c_hw.h`.
 
--------
+_The ATmega8 is somewhat special since it lacks a TWIMASK register.
+Due to this it just cannot be made to respond to an entire address
+range._
+
+
+## What To Find Where
 
 The Library itself is contained below the path `lib-i2c/`.
 You find there its `includes` and `sources` in case you want to
 take a look under the hood. Normally you do not need to bother
 with its details.
 The only file of interest is `lib-i2c/includes/i2c_hw.h` giving
-all the API interface details. A full fledged
-[Doxygen]()
-documentation is available and found in the `doxygen` folder.
+all the API interface details.
 
 Demo applications are prepared for the variety of operation modes
 the I²C is capable of. There are quite a couple and each is put
@@ -65,8 +69,6 @@ into a dedicated folder:
    slave
 *  `multi-master-slave-demo/` - two master devices access one
    common slave and also each other as slave
-*  `example-usage-demo` - how to setup a typical project for just
-   one micro
 
 Each demo contains documentation on the circuitry intended, the
 application source code and the makefiles used to build this
@@ -80,68 +82,22 @@ micros and hook the hardware up according to the schematic to try
 it out.
 
 In most cases your project will compile just for one certain
-setting using one micro. This is way less complicated when
-considering the `example-usage demo`. The `Makefile` given there
-you could use as foundation for your own purposes.
+setting using one micro. For this you just need one makefile and 
+one main.c file.
 
 It is recommended to use the folder structure as it is given here.
 It clearly distinguishes between lib parts, application and the
 top level used for some management and documentation purposes.
 
-----------------
 
-Anwendung:
-Man bindet die Dateien aus dem lib-Verzeichnis ein, lässt das Make
-laufen und hat was man für seinen Anwendungsfall benötigt.
+## How To Use
 
-In jeder .c-Datei die richtige Auswahl an bedingter Compilierung
-setzen, dann werden unnötige Dateien (denen Definitionen im Header
-fehlen) nicht gebaut. Falls etwas nicht stimmt, meckert der Linker.
+Well, this is quite simple. Take all files found in `/lib-i2c/`, add
+them to your project and compile them together with all the other
+things. Of course, your makefile needs to get all files referenced for
+compilation.
 
-Und genau so ist es aktuell für die "twi0_..." Sektion gelöst.
-Jede Datei hat ifdefs und wird nur compiliert wenn die Defs passend
-stehen. Sonst macht der Compiler nix (aber das Make macht
-Vorarbeiten).
-
-Testlauf mit dem alten MMS-Testcase: Es wird gebaut wenn die Lib-
-Einstellungen passen, es verweigert wenn die Einstellungen der Lib
-falsch sind.
-
-Wir hätten dann noch drei Modi ...
-
-Je Modus ein Verzeichnis mit Demo. Die Lib liegt "nebenan".
-
-...
-+- Projekt-root
-   +- lib-i2c
-   |  +- include
-   |  +- source
-   |
-   +- multi-master-slave-demo (jeder µC 8 MHz interner OSC)
-   |
-   +- multi-master-demo
-   |
-   +- single-master-demo
-   |
-   +- slave-demo
-
-
-Für eine Lib zu einer Application ist ein Makefile ausreichend.
-In dem Makefile werden immer *alle* Lib-Routinen für die gewünschte
-Einstellung angegeben.
-Baut man allerdings zwei unterschiedliche Applikationen, ist für jede
-Applikation ein eigenes Makefile mit nur dem jeweiligen Teil für
-twi oder usi sinnvoller. Dann lassen sich beide Programme mit einem
-Master-Makefile bauen. Alternativ werden die demos noch weiter
-aufgeteilt. Der Aufwand ist aber nur für die demos mit mehreren µCs
-erforderlich. Für den üblichen Fall (ein µC-Projekt) geht es einfacher.
-
-Wenn das alles soweit fertig ist, muss zu jedem der 4 Anwendungsfälle
-eine demo bereitgestellt werden. Dazu ist die komplette Dokumentation
-zu pflegen und als Doxygen-Dateisatz mit abzuliefern. Es sollen keine
-Fragen bleiben. Ausser vielleicht die Frage nach: "Warum gibt es die
-Lib erst jetzt im Netz?"
-
-Ein schneller Steifzug eben brachte sowohl reine SW-Libs als auch
-einige TWI-Libs. Alle nur als Single Master brauchbar. USI ist gar
-nicht zu finden.
+See the demos for some examples. Be aware, that most demos provide code
+for _two different_ AVRs. Because if this you will find one `...usi...`
+and one `...twi...` set of files that need to get flashed into the right
+controller.
